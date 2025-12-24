@@ -4,7 +4,6 @@
 All motion is assumed to occur along a single axis with constant acceleration.
 """
 
-from typing import Optional
 
 
 def solve_final_velocity (
@@ -18,7 +17,7 @@ def solve_final_velocity (
     Parameters
     ----------
     v0 : float 
-        Intial velocity (m/s).
+        Initial velocity (m/s).
     a : float
         Constant acceleration (m/s^2).
     t: float 
@@ -28,7 +27,7 @@ def solve_final_velocity (
     -------
         Final velocity (m/s) after time t.
     """
-    pass
+    return v0 + a * t
     
     
 def solve_final_position(
@@ -38,7 +37,7 @@ def solve_final_position(
      t: float
 ) -> float:
     """
-    Compute final position for constatn acceleration.
+    Compute final position for constant acceleration.
     
     Parameters
     ----------
@@ -66,7 +65,7 @@ def solve_velocity_squared(
     x: float
 ) -> float:
     """
-    Compute final veolcity magnitude using the no-time equation.
+    Compute final veolcity squared using the no-time equation.
     
     Parameters
     ----------
@@ -83,7 +82,7 @@ def solve_velocity_squared(
     Returns
     -------
     float
-        Final velocity (m/s) at position x.
+        Final velocity squared (m^2/s^2) at position x.
     """
-    pass
+    return v0**2 + 2 * a * (x - x0)
     
