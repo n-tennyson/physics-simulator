@@ -86,3 +86,31 @@ def solve_velocity_squared(
     """
     return v0**2 + 2 * a * (x - x0)
     
+    
+def solve_position_avg_velocity(
+    x0: float,
+    v0: float,
+    v: float,
+    t: float
+    ) -> float:
+    """
+    Compute final postion using average velocity equation.
+    
+    Parameters
+    ----------
+    
+    x0: float 
+        initial position
+    v0: float
+        initial velocity
+    v: float
+        final velocity
+    t: float
+        final time
+        
+    Returns
+    -------
+    float
+        Final position (m) at time (s)
+    """
+    return x0 + .5 * (v + v0) * t

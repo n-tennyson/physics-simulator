@@ -1,5 +1,5 @@
 import math
-from physics.kinematics.one_d import solve_final_velocity, solve_final_position, solve_velocity_squared
+from physics.kinematics.one_d import solve_final_velocity, solve_final_position, solve_velocity_squared, solve_position_avg_velocity
 
 
 def test_solve_final_position_constant_acceleration():
@@ -47,4 +47,20 @@ def test_solve_velocity_squared_constant_acceleration():
     result = solve_velocity_squared(v0, a, x0, x)
     
     assert math.isclose(result, 104.0)
+    
+
+def test_position_solve_avg_velocity_constant_acceleration():
+    """
+    Given x0 = 1 m, v0 = 2 m/s, v = 4 m/s, t = 5 s,
+    the final postion should be 16 m
+    """
+    x0 = 1
+    v0 = 2 
+    v = 4
+    t = 5
+    
+    
+    result = solve_position_avg_velocity(x0, v0, v, t)
+    
+    assert math.isclose(result, 16.0)
     
