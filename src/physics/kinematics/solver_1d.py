@@ -1,37 +1,84 @@
-"""
-Solver for 1D kinematics problems with constant acceleration.
+from physics.kinematics.one_d import (
+    solve_final_position, 
+    solve_final_velocity, 
+    solve_position_avg_velocity, 
+    solve_velocity_from_position,
+    solve_time_linear_velocity,
+    solve_time_quadratic_position
+)
 
-This module selectes an appropriate kinematic equation based on known
-variables and solves for a requested target variable
-"""
 
+RULES = [
+    
+    # --- Velocity rules --- 
+    {
+        "provides": "v",
+        "requires": {"v0", "a", "t"},
+        "fn": solve_final_velocity,
+        "priority": 1,
+        "kind": "linear",
+    }, 
+    {
+        "provides": "v",
+        "requires": {"v0", "a", "x0", "x"},
+        "fn": solve_velocity_from_position,
+        "priority": 2,
+        "kind": "linear",   # v = sqrt(...)
+    }, 
+            
+            
+    # --- Position rules ---
+    {
+        "provides": "x",
+        "requires": {"x0", "v0", "a", "t"},
+        "fn": solve_final_position,
+        "priority": 1,
+        "kind": "linear", 
+    }, 
+    {
+        "provides": "x",
+        "requires": {"x0", "v0", "v", "t"},
+        "fn": solve_position_avg_velocity,
+        "priority": 2,
+        "kind": "linear", 
+    }, 
+    
+    
+    # --- Time rules ---
+    {
+        "provides": "t",
+        "requires": {"v", "v0", "a"},
+        "fn": solve_time_linear_velocity,
+        "priority": 1,
+        "kind": "linear", 
+    }, 
+    {
+        "provides": "t",
+        "requires": {"x", "x0", "v0", "a"},
+        "fn": solve_time_quadratic_position,
+        "priority": 2,
+        "kind": "quadratic", 
+    }, 
+]
 
 def solve_kinematics_1d(
     knowns: dict[str, float],
     target: str
-) -> float:
-    """
-    Solve a 1D constant-acceleration kinematics problem.
-
-    Parameters
-    ----------
-    knowns : dict[str, float]
-        Dictionary of known variables. Valid keys include:
-        'x0', 'x', 'v0', 'v', 'a', 't'.
-
-    target : str
-        Variable to solve for. Must be one of:
-        'x', 'v', 't', 'a'.
-
-
-    Returns
-    --------
-    float
-        Solved value of the target variable.
-        
-    Raises 
-    ------
-    ValueError 
-        If the target cannot be solved with the given knowns.
-    """
-    pass  
+) -> float | tuple[float, float]:
+    
+    
+    if target in knowns:
+        return knowns[target]
+    
+    candidates = [
+        rule for rule in RULES 
+        if rule["provides"] == target 
+        and rule["requires"].issubset(knowns.keys())
+    ]
+    
+    if not candidates:
+        raise ValueError("No solvable rule")
+    
+    rule = min(candidates, key=lambda r: r["priority"])
+    kwargs = {k: knowns[k] for k in rule["requires"]}
+    return rule["fn"](**kwargs)
